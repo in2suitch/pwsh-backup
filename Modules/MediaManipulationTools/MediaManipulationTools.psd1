@@ -3,7 +3,7 @@
     RootModule = 'MediaManipulationTools.psm1'
     FunctionsToExport = @(
         'Convert-Audio'
-        'Get-MediaObject'
+        'Get-MediaItem'
         'Copy-Media'
         'Resize-Image'
     )
