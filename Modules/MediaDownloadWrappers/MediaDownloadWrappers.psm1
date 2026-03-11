@@ -87,8 +87,8 @@ function Save-Media {
         [Alias('A')]
         [switch]$AudioOnly,
 
-        [Alias('Webm')]
-        [switch]$DefaultYoutubeExtension,
+        [Alias('Mp4')]
+        [switch]$AsMp4,
 
         [Alias('C')]
         [switch]$DefaultYoutubePlayerClient,
@@ -157,7 +157,7 @@ function Save-Media {
     $CompleteYoutubeArguments = @(
         '--sponsorblock-mark', 'all'
         $ComplexHostArguments
-        if (-not $DefaultYoutubeExtension) { $Mp4MuxingArguments }
+        if ($AsMp4) { $Mp4MuxingArguments }
         $SourceNeutralArguments
     )
 
