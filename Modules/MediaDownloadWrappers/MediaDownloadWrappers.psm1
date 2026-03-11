@@ -136,7 +136,7 @@ function Save-Media {
     )
 
     $OtherHostArguments = @(
-        if ($Name) { '--filename', "${Name}.{extension}" }
+        if ($Name) { '--filename', "${Name}_$(__UtcDate).{extension}" }
         if ($Path) { '--destination', $Path }
         if ($IsOutputVerbose) { '--verbose' }
     )
