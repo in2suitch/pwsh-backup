@@ -57,16 +57,14 @@ function Get-MediaItem {
     [Alias('gmi')]
     param(
         [Parameter(ValueFromPipeline)]
-        [string[]]$Path
+        [System.IO.FileInfo[]]$InputObject
     )
 
     process {
-        foreach ($P in $Path) {
-            $ItemObject = Get-Item -LiteralPath $P
-
+        foreach ($Object in $InputObject) {
             $AudioCodecJson = (
                 ffprobe -loglevel quiet -select_streams a:0 `
-                    -show_entries stream=codec_name -of json $ItemObject.FullName
+                    -show_entries stream=codec_name -of json $Object.FullName
             )
             $IsMp4CompatibilityRequired = ($AudioCodecJson |
                 ConvertFrom-Json).streams.codec_name -eq 'opus'
@@ -74,10 +72,10 @@ function Get-MediaItem {
             [PSCustomObject]@{
                 PSTypeName = 'MediaObject'
 
-                BaseName = $ItemObject.BaseName
-                FullName = $ItemObject.FullName
-                Extension = $ItemObject.Extension
-                DirectoryName = $ItemObject.DirectoryName
+                BaseName = $Object.BaseName
+                FullName = $Object.FullName
+                Extension = $Object.Extension
+                DirectoryName = $Object.DirectoryName
 
                 FullyMp4Compatible = -not $IsMp4CompatibilityRequired
             }
