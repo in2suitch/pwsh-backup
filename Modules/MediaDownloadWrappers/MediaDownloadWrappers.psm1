@@ -23,6 +23,8 @@ function __OptimalYoutubePlayerClientArgumentList {
     '--extractor-args', "youtube:player_client=$ClientConfiguration"
 }
 
+function __UtcDate { Get-Date -Format 'yyyy-MM-dd' -AsUTC }
+
 function Invoke-YtDlp {
     [Alias('iyd')]
     param()
