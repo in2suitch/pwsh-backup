@@ -24,9 +24,7 @@ function Convert-Audio {
             if (-not $Aac) {
                 '-codec:a', 'libopus', '-b:a', '128k', '-f', 'mp4', $ConvertedFilePath
             }
-            else {
-                '-f', 'wav', '-'
-            }
+            else { '-f', 'wav', '-' }
         )
 
         $AacSpecificArguments = @(
@@ -37,30 +35,20 @@ function Convert-Audio {
             $ConvertedFilePath
         )
 
-        if (-not $Aac) {
-            ffmpeg $MainConversionArguments
-        }
-        elseif ($_.Extension -eq '.wav') {
-            qaac $_.FullName $AacSpecificArguments
-        }
-        else {
-            ffmpeg $MainConversionArguments | qaac - $AacSpecificArguments
-        }
+        if (-not $Aac) { ffmpeg $MainConversionArguments }
+        elseif ($_.Extension -eq '.wav') { qaac $_.FullName $AacSpecificArguments }
+        else { ffmpeg $MainConversionArguments | qaac - $AacSpecificArguments }
 
         if (-not $using:Unoptimized -and ($LASTEXITCODE -eq 0)) {
             $OptimizedFilePath = Join-Path $_.DirectoryName "_optimized_$FinalFileName"
             mp4box -quiet -add $ConvertedFilePath -inter 500 -new $OptimizedFilePath
 
-            if ($LASTEXITCODE -eq 0) {
-                Remove-Item $ConvertedFilePath -Force
-            }
+            if ($LASTEXITCODE -eq 0) { Remove-Item $ConvertedFilePath -Force }
 
             if (-not (Test-Path $FinalFilePath)) {
                 Rename-Item $OptimizedFilePath $FinalFileName -Force
             }
-            else {
-                Write-Warning "File $FinalFileName already exists."
-            }
+            else { Write-Warning "File $FinalFileName already exists." }
         }
     }
 }
