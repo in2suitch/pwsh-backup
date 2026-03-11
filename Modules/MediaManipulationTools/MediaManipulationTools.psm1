@@ -74,11 +74,11 @@ function Get-MediaItem {
 
     process {
         foreach ($P in $Path) {
-            $Object = Get-Item -LiteralPath $P
+            $ItemObject = Get-Item -LiteralPath $P
 
             $AudioCodecJson = (
                 ffprobe -loglevel quiet -select_streams a:0 `
-                    -show_entries stream=codec_name -of json $Object.FullName
+                    -show_entries stream=codec_name -of json $ItemObject.FullName
             )
             $IsMp4CompatibilityRequired = ($AudioCodecJson |
                 ConvertFrom-Json).streams.codec_name -eq 'opus'
@@ -86,10 +86,10 @@ function Get-MediaItem {
             [PSCustomObject]@{
                 PSTypeName = 'MediaObject'
 
-                BaseName = $Object.BaseName
-                FullName = $Object.FullName
-                Extension = $Object.Extension
-                DirectoryName = $Object.DirectoryName
+                BaseName = $ItemObject.BaseName
+                FullName = $ItemObject.FullName
+                Extension = $ItemObject.Extension
+                DirectoryName = $ItemObject.DirectoryName
 
                 FullyMp4Compatible = -not $IsMp4CompatibilityRequired
             }
