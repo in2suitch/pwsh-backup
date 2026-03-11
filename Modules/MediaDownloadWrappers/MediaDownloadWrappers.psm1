@@ -243,13 +243,9 @@ function Get-MediaInfo {
         $Path
     )
 
-    if ($Path -notmatch '^https?:') {
-        mediainfo (Convert-Path $Path)
-    }
+    if ($Path -notmatch '^https?:') { mediainfo (Convert-Path $Path) }
     elseif ($Path -match 'youtu|^[0-9A-Za-z_-]{11}$|twitch|vimeo') {
         Invoke-YtDlp @SourceSpecificArguments
     }
-    else {
-        Invoke-GalleryDl -Authenticated --list-keywords $Path
-    }
+    else { Invoke-GalleryDl -Authenticated --list-keywords $Path }
 }
