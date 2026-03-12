@@ -97,7 +97,7 @@ function Copy-Media {
         [Parameter(ValueFromRemainingArguments)]
         [string[]]$ArgumentList,
 
-        [Alias('NV')]
+        [Alias('NV', 'A')]
         [switch]$NoVideo,
 
         [switch]$Unoptimized
