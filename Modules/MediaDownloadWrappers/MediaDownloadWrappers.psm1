@@ -8,10 +8,10 @@ function __BrowserCookiesArgumentList {
         "$HOME/Library/Application Support/Floorp/Profiles/o2pl6jz3.default-default"
     )
 
-    $CurrentOperatingSystemPath = $IsWindows ? $WindowsBrowserProfilePath
-                                             : $MacBrowserProfilePath
+    $CurrentSystemPath = $IsWindows ? $WindowsBrowserProfilePath
+                                    : $MacBrowserProfilePath
 
-    '--cookies-from-browser', "firefox:$CurrentOperatingSystemPath"
+    '--cookies-from-browser', "firefox:$CurrentSystemPath"
 }
 
 function __OptimalYoutubePlayerClientArgumentList {
