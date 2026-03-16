@@ -70,7 +70,7 @@ function Get-MediaItem {
                 ConvertFrom-Json).streams.codec_name -eq 'opus'
 
             [PSCustomObject]@{
-                PSTypeName = 'MediaObject'
+                PSTypeName = 'MMTools.Media'
 
                 BaseName = $Object.BaseName
                 FullName = $Object.FullName
@@ -87,7 +87,7 @@ function Copy-Media {
     [Alias('cpm')]
     param(
         [Parameter(ValueFromPipeline)]
-        [PSTypeName('MediaObject')]
+        [PSTypeName('MMTools.Media')]
         [object[]]$InputObject,
 
         [ValidatePattern('^\.[a-zA-Z0-9]+', ErrorMessage = 'Incorrect extension.')]
