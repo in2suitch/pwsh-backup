@@ -104,7 +104,7 @@ function Save-Media {
 
     $MediaHostName = $Url[0].Host -replace '^www\.'
     $ComplexHostNames = 'twitch.tv', 'player.vimeo.com'
-    $SourceNeutralArguments = @($ArgumentList, $Url)
+    $SourceNeutralArguments = @($ArgumentList; $Url)
 
     $ComplexHostArguments = @(
         if ($Name) {
