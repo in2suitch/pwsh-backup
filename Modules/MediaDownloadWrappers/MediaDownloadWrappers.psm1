@@ -95,7 +95,6 @@ function Save-Media {
         [Alias('C')]
         [switch]$DefaultYoutubePlayerClient,
 
-        [switch]$Slowly,
         [switch]$Authenticated,
         [switch]$WithYtDlp
     )
@@ -105,12 +104,7 @@ function Save-Media {
 
     $MediaHostName = $Url[0].Host -replace '^www\.'
     $ComplexHostNames = 'twitch.tv', 'player.vimeo.com'
-
-    $SourceNeutralArguments = @(
-        if ($Slowly) { '--limit-rate', '4.5M' }
-        $ArgumentList
-        $Url
-    )
+    $SourceNeutralArguments = @($ArgumentList, $Url)
 
     $ComplexHostArguments = @(
         if ($Name) {
