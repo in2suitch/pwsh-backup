@@ -9,6 +9,7 @@
         'Invoke-Ffprobe'
         'Get-YoutubeUrl'
         'Get-MediaDate'
+        'Invoke-Losslesscut'
     )
     AliasesToExport = @(
         'gpa'
@@ -19,6 +20,7 @@
         'ifp'
         'gyt'
         'gmd'
+        'ilc'
     )
     CmdletsToExport = @()
 }

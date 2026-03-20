@@ -75,3 +75,11 @@ function Get-MediaDate {
 
     Get-Date -UnixTimeSeconds $UnixTime -AsUTC
 }
+
+function Invoke-Losslesscut {
+    [Alias('ilc')]
+    param([string]$Path)
+
+    Start-Process LosslessCut (Convert-Path -LiteralPath $Path) `
+        -RedirectStandardOutput NUL
+}
