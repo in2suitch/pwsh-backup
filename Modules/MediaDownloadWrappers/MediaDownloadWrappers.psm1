@@ -225,7 +225,7 @@ if ($IsWindows) {
 }
 
 function Get-MediaInfo {
-    [Alias('gminfo')]
+    [Alias('gmi')]
     param(
         [string]$Path,
         [string]$Field,

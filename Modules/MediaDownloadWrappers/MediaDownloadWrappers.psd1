@@ -15,7 +15,7 @@
         'svm'
         'ayh'
         'svkemono'
-        'gminfo'
+        'gmi'
     )
     CmdletsToExport = @()
 }
