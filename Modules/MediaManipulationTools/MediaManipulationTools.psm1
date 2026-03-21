@@ -53,42 +53,11 @@ function Convert-Audio {
     }
 }
 
-function Get-MediaItem {
-    [Alias('gmi')]
-    param(
-        [Parameter(ValueFromPipeline)]
-        [System.IO.FileInfo[]]$InputObject
-    )
-
-    process {
-        foreach ($Object in $InputObject) {
-            $AudioCodecJson = (
-                ffprobe -loglevel quiet -select_streams a:0 `
-                    -show_entries stream=codec_name -of json $Object.FullName
-            )
-            $IsMp4CompatibilityRequired = ($AudioCodecJson |
-                ConvertFrom-Json).streams.codec_name -eq 'opus'
-
-            [PSCustomObject]@{
-                PSTypeName = 'MMTools.Media'
-
-                BaseName = $Object.BaseName
-                FullName = $Object.FullName
-                Extension = $Object.Extension
-                DirectoryName = $Object.DirectoryName
-
-                FullyMp4Compatible = -not $IsMp4CompatibilityRequired
-            }
-        }
-    }
-}
-
 function Copy-Media {
     [Alias('cpm')]
     param(
         [Parameter(ValueFromPipeline)]
-        [PSTypeName('MMTools.Media')]
-        [object[]]$InputObject,
+        [System.IO.FileInfo[]]$InputObject,
 
         [ValidatePattern('^\.[a-zA-Z0-9]+', ErrorMessage = 'Incorrect extension.')]
         [Alias('E')]
@@ -107,6 +76,14 @@ function Copy-Media {
     process { foreach ($Object in $InputObject) { $InputObjects.Add($Object) } }
     end {
         $InputObjects | ForEach-Object -ThrottleLimit 6 -Parallel {
+            function __FullMp4Compatibility ($MediaObject) {
+                $AudioCodecJson = (
+                    ffprobe -loglevel quiet -select_streams a:0 `
+                        -show_entries stream=codec_name -of json $MediaObject.FullName
+                )
+                ($AudioCodecJson | ConvertFrom-Json).streams.codec_name -ne 'opus'
+            }
+
             $ArgumentList = $using:ArgumentList
             $NoVideo = $using:NoVideo
             $Unoptimized = $using:Unoptimized
@@ -126,7 +103,7 @@ function Copy-Media {
                 '-loglevel', 'warning'
                 '-i', $_.FullName
 
-                if (-not $_.FullyMp4Compatible -and $NewExtension -eq '.m4a') {
+                if (-not (__FullMp4Compatibility $_) -and $NewExtension -eq '.m4a') {
                     '-f', 'mp4'
                 }
 
