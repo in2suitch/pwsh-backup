@@ -63,6 +63,8 @@ function Copy-Media {
         [Alias('E')]
         [string]$NewExtension,
 
+        [string]$Destination,
+
         [Parameter(ValueFromRemainingArguments)]
         [string[]]$ArgumentList,
 
@@ -93,8 +95,9 @@ function Copy-Media {
             $IsOptimizable = $NewExtension -in $OptimizableExtensions
 
             $NewName = "$($_.BaseName)$NewExtension"
-            $IsNewNameOccupied = Test-Path (Join-Path $_.DirectoryName $NewName)
-            $NoNameCollisionPath = Join-Path $_.DirectoryName (
+            $Destination = $using:Destination ? $using:Destination : $_.DirectoryName
+            $IsNewNameOccupied = Test-Path (Join-Path $Destination $NewName)
+            $NoNameCollisionPath = Join-Path $Destination (
                 $IsNewNameOccupied ? "_copy_$NewName" : $NewName
             )
 
@@ -118,7 +121,7 @@ function Copy-Media {
 
             if (-not $Unoptimized -and $IsOptimizable -and $LASTEXITCODE -eq 0) {
                 $OptimizableMedia = $NoNameCollisionPath
-                $OptimizedMedia = Join-Path $_.DirectoryName "_optimized_$NewName"
+                $OptimizedMedia = Join-Path $Destination "_optimized_$NewName"
                 mp4box -quiet -add $OptimizableMedia -inter 500 -new $OptimizedMedia
 
                 if ($LASTEXITCODE -eq 0) {
