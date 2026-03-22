@@ -82,6 +82,7 @@ function Save-Media {
 
         [string]$Name,
         [string]$Path,
+        [int]$Rate,
 
         [Parameter(ValueFromRemainingArguments)]
         [string[]]$ArgumentList,
@@ -104,7 +105,11 @@ function Save-Media {
 
     $MediaHostName = $Url[0].Host -replace '^www\.'
     $ComplexHostNames = 'twitch.tv', 'player.vimeo.com'
-    $SourceNeutralArguments = @($ArgumentList; $Url)
+    $SourceNeutralArguments = @(
+        if ($Rate) { '--limit-rate', "${Rate}M" }
+        $ArgumentList
+        $Url
+    )
 
     $ComplexHostArguments = @(
         if ($Name) {
