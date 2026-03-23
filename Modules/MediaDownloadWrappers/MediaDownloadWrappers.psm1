@@ -14,9 +14,7 @@ function __BrowserCookiesArgumentList {
     '--cookies-from-browser', "firefox:$CurrentSystemPath"
 }
 
-function __OptimalYoutubePlayerClientArgumentList {
-    param([switch]$ForHistory)
-
+function __OptimalYoutubePlayerClientArgumentList ([switch]$ForHistory) {
     $ClientConfiguration = $ForHistory ? 'default,-web_creator;use_ad_playback_context'
                                        : 'android_vr'
 
