@@ -89,6 +89,9 @@ function Save-Media {
         [Alias('Mp4')]
         [switch]$AsMp4,
 
+        [Alias('ND')]
+        [switch]$NoDate,
+
         [Alias('C')]
         [switch]$DefaultYoutubePlayerClient,
 
@@ -133,7 +136,7 @@ function Save-Media {
     $OtherHostArguments = @(
         if ($Name) {
             '--filename'
-            if ($Name -match '\d{4}-\d{2}-\d{2}') { "$Name.{extension}" }
+            if ($NoDate -or $Name -match '\d{4}-\d{2}-\d{2}') { "$Name.{extension}" }
             else { "${Name}_$(__UtcDate).{extension}" }
         }
 
