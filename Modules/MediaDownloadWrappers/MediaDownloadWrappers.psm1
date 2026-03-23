@@ -210,7 +210,7 @@ if ($IsWindows) {
             --destination (__DefaultDownloadLocation) $Url
 
         if ($LASTEXITCODE -eq 0) {
-            $MetadataTxts = Get-ChildItem "$(__DefaultDownloadLocation)\*.txt"
+            $MetadataTxts = Get-ChildItem (Join-Path (__DefaultDownloadLocation) *.txt)
             $ExternalUrls = [System.Collections.Generic.HashSet[string]]::new()
             $UrlPattern = [regex]"https?://[^""'\s<>]+"
 
@@ -222,7 +222,7 @@ if ($IsWindows) {
                 }
             }
 
-            $ExternalUrls | Set-Content "$(__DefaultDownloadLocation)\links.txt"
+            $ExternalUrls | Set-Content (Join-Path (__DefaultDownloadLocation) links.txt)
             $MetadataTxts | Remove-Item -Force
         }
     }
