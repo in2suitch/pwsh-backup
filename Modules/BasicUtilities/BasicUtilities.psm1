@@ -69,6 +69,7 @@ function Get-MediaDate {
 function Invoke-Losslesscut {
     [Alias('ilc')]param([string]$Path)
 
+    $NullDevice = $IsMacOS ? '/dev/null' : 'NUL'
     Start-Process LosslessCut (Convert-Path -LiteralPath $Path) `
-        -RedirectStandardOutput NUL
+        -RedirectStandardOutput $NullDevice
 }
