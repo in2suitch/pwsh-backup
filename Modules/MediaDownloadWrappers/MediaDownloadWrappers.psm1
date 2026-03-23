@@ -206,7 +206,22 @@ if ($IsWindows) {
     function Save-KemonoExternalUrlList {
         [Alias('svkemono')]param([string]$Url)
 
-        gallery-dl --quiet --config kemono.conf --no-download `
+        $ConfigurationArguments = @(
+            '--option', 'extractor.directory=[]'
+            '--option', 'extractor.kemono.endpoint=posts+'
+            '--option', 'extractor.kemono.postprocessors.name=metadata'
+            '--option', 'extractor.kemono.postprocessors.event=post'
+            '--option', 'extractor.kemono.postprocessors.filename={id}_links.txt'
+            '--option', 'extractor.kemono.postprocessors.mode=custom'
+            '--option'
+
+            @(
+                'extractor.kemono.postprocessors.format'
+                '"Text: {content}\nDesc: {description}\nEmbed: {embed[url]}\n"'
+            ) -join '='
+        )
+
+        gallery-dl --quiet $ConfigurationArguments --no-download `
             --destination (__DefaultDownloadLocation) $Url
 
         if ($LASTEXITCODE -eq 0) {
