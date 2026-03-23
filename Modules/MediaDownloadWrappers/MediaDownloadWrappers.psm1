@@ -204,9 +204,9 @@ function Add-YoutubeHistory {
 
 if ($IsWindows) {
     function Save-KemonoExternalUrlList {
-        [Alias('svkemono')]param()
+        [Alias('svkemono')]param([string]$Url)
 
-        gallery-dl --quiet --config kemono.conf --no-download $args
+        gallery-dl --quiet --config kemono.conf --no-download $Url
 
         if ($LASTEXITCODE -eq 0) {
             $MetadataTxts = Get-ChildItem "$(__DefaultDownloadLocation)\*.txt"
