@@ -26,8 +26,7 @@ function __OptimalYoutubePlayerClientArgumentList {
 function __UtcDate { Get-Date -Format 'yyyy-MM-dd' -AsUTC }
 
 function Invoke-YtDlp {
-    [Alias('iyd')]
-    param()
+    [Alias('iyd')]param()
 
     $Arguments = @(
         '--buffer-size', '7.5M', '--no-resize-buffer'
@@ -48,8 +47,7 @@ function Invoke-YtDlp {
 }
 
 function Invoke-GalleryDl {
-    [Alias('igd')]
-    param([switch]$Authenticated)
+    [Alias('igd')]param([switch]$Authenticated)
 
     $Arguments = @(
         '--chunk-size', '7.5M'
@@ -205,8 +203,7 @@ function Add-YoutubeHistory {
 
 if ($IsWindows) {
     function Save-KemonoExternalUrlList {
-        [Alias('svkemono')]
-        param()
+        [Alias('svkemono')]param()
 
         gallery-dl --quiet --config kemono.conf --no-download $args
 

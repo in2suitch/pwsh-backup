@@ -1,6 +1,5 @@
 function Get-ParameterAlias {
-    [Alias('gpa')]
-    param([string]$CommandName)
+    [Alias('gpa')]param([string]$CommandName)
 
     $AdvancedParameterNames = [System.Collections.Generic.HashSet[string]]::new(
         [string[]]@(
@@ -16,8 +15,7 @@ function Get-ParameterAlias {
 }
 
 function Invoke-ZapretDirectory {
-    [Alias('iz')]
-    param()
+    [Alias('iz')]param()
 
     Invoke-Item "$env:USERPROFILE\Documents\zapret\zapret-winws"
 }
@@ -49,36 +47,27 @@ function Start-Media {
 }
 
 function Invoke-Ffmpeg {
-    [Alias('ifm')]
-    param()
-
+    [Alias('ifm')]param()
     ffmpeg -hide_banner $args
 }
 
 function Invoke-Ffprobe {
-    [Alias('ifp')]
-    param()
-
+    [Alias('ifp')]param()
     ffprobe -hide_banner $args
 }
 
 function Get-YoutubeUrl {
-    [Alias('gyt')]
-    param([string]$Id)
-
+    [Alias('gyt')]param([string]$Id)
     Set-Clipboard "https://youtube.com/watch?v=$Id" -PassThru
 }
 
 function Get-MediaDate {
-    [Alias('gmd')]
-    param([int]$UnixTime)
-
+    [Alias('gmd')]param([int]$UnixTime)
     Get-Date -UnixTimeSeconds $UnixTime -AsUTC
 }
 
 function Invoke-Losslesscut {
-    [Alias('ilc')]
-    param([string]$Path)
+    [Alias('ilc')]param([string]$Path)
 
     Start-Process LosslessCut (Convert-Path -LiteralPath $Path) `
         -RedirectStandardOutput NUL
