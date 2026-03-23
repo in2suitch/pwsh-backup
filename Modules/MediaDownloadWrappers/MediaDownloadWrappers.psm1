@@ -76,7 +76,9 @@ function Save-Media {
         )]
         [uri[]]$Url,
 
+        [Alias('N')]
         [string]$Name,
+
         [string]$Path,
         [int]$Rate,
 
