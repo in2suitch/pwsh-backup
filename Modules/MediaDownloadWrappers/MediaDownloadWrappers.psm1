@@ -206,7 +206,8 @@ if ($IsWindows) {
     function Save-KemonoExternalUrlList {
         [Alias('svkemono')]param([string]$Url)
 
-        gallery-dl --quiet --config kemono.conf --no-download $Url
+        gallery-dl --quiet --config kemono.conf --no-download `
+            --destination (__DefaultDownloadLocation) $Url
 
         if ($LASTEXITCODE -eq 0) {
             $MetadataTxts = Get-ChildItem "$(__DefaultDownloadLocation)\*.txt"
