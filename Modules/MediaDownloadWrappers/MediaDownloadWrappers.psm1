@@ -199,44 +199,42 @@ function Add-YoutubeHistory {
     Invoke-YtDlp @Arguments
 }
 
-if ($IsWindows) {
-    function Save-KemonoExternalUrlList {
-        [Alias('svkemono')]param([string]$Url)
+function Save-KemonoExternalUrlList {
+    [Alias('svkemono')]param([string]$Url)
 
-        $ConfigurationArguments = @(
-            '--option', 'extractor.directory=[]'
-            '--option', 'extractor.kemono.endpoint=posts+'
-            '--option', 'extractor.kemono.postprocessors.name=metadata'
-            '--option', 'extractor.kemono.postprocessors.event=post'
-            '--option', 'extractor.kemono.postprocessors.filename={id}_links.txt'
-            '--option', 'extractor.kemono.postprocessors.mode=custom'
-            '--option'
+    $ConfigurationArguments = @(
+        '--option', 'extractor.directory=[]'
+        '--option', 'extractor.kemono.endpoint=posts+'
+        '--option', 'extractor.kemono.postprocessors.name=metadata'
+        '--option', 'extractor.kemono.postprocessors.event=post'
+        '--option', 'extractor.kemono.postprocessors.filename={id}_links.txt'
+        '--option', 'extractor.kemono.postprocessors.mode=custom'
+        '--option'
 
-            @(
-                'extractor.kemono.postprocessors.format'
-                '"Text: {content}\nDesc: {description}\nEmbed: {embed[url]}\n"'
-            ) -join '='
-        )
+        @(
+            'extractor.kemono.postprocessors.format'
+            '"Text: {content}\nDesc: {description}\nEmbed: {embed[url]}\n"'
+        ) -join '='
+    )
 
-        gallery-dl --quiet $ConfigurationArguments --no-download `
-            --destination (__DefaultDownloadLocation) $Url
+    gallery-dl --quiet $ConfigurationArguments --no-download `
+        --destination (__DefaultDownloadLocation) $Url
 
-        if ($LASTEXITCODE -eq 0) {
-            $MetadataTxts = Get-ChildItem (Join-Path (__DefaultDownloadLocation) *.txt)
-            $ExternalUrls = [System.Collections.Generic.HashSet[string]]::new()
-            $UrlPattern = [regex]"https?://[^""'\s<>]+"
+    if ($LASTEXITCODE -eq 0) {
+        $MetadataTxts = Get-ChildItem (Join-Path (__DefaultDownloadLocation) *.txt)
+        $ExternalUrls = [System.Collections.Generic.HashSet[string]]::new()
+        $UrlPattern = [regex]"https?://[^""'\s<>]+"
 
-            foreach ($MetadataTxt in $MetadataTxts) {
-                $Content = [System.IO.File]::ReadAllText($MetadataTxt.FullName)
+        foreach ($MetadataTxt in $MetadataTxts) {
+            $Content = [System.IO.File]::ReadAllText($MetadataTxt.FullName)
 
-                foreach ($PatternMatch in $UrlPattern.Matches($Content)) {
-                    [void]$ExternalUrls.Add($PatternMatch.Value)
-                }
+            foreach ($PatternMatch in $UrlPattern.Matches($Content)) {
+                [void]$ExternalUrls.Add($PatternMatch.Value)
             }
-
-            $ExternalUrls | Set-Content (Join-Path (__DefaultDownloadLocation) links.txt)
-            $MetadataTxts | Remove-Item -Force
         }
+
+        $ExternalUrls | Set-Content (Join-Path (__DefaultDownloadLocation) links.txt)
+        $MetadataTxts | Remove-Item -Force
     }
 }
 
