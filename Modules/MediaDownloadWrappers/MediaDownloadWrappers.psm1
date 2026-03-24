@@ -23,6 +23,21 @@ function __OptimalYoutubePlayerClientArgumentList ([switch]$ForHistory) {
 
 function __UtcDate { Get-Date -Format 'yyyy-MM-dd' -AsUTC }
 
+function __KemonoExtrnalUrlConfiguration {
+    '--option', 'extractor.directory=[]'
+    '--option', 'extractor.kemono.endpoint=posts+'
+    '--option', 'extractor.kemono.postprocessors.name=metadata'
+    '--option', 'extractor.kemono.postprocessors.event=post'
+    '--option', 'extractor.kemono.postprocessors.filename={id}_links.txt'
+    '--option', 'extractor.kemono.postprocessors.mode=custom'
+    '--option'
+
+    @(
+        'extractor.kemono.postprocessors.format'
+        '"Text: {content}\nDesc: {description}\nEmbed: {embed[url]}\n"'
+    ) -join '='
+}
+
 function Invoke-YtDlp {
     [Alias('iyd')]param()
 
@@ -202,23 +217,8 @@ function Add-YoutubeHistory {
 function Save-KemonoExternalUrlList {
     [Alias('svkemono')]param([string]$Url)
 
-    $ConfigurationArguments = @(
-        '--option', 'extractor.directory=[]'
-        '--option', 'extractor.kemono.endpoint=posts+'
-        '--option', 'extractor.kemono.postprocessors.name=metadata'
-        '--option', 'extractor.kemono.postprocessors.event=post'
-        '--option', 'extractor.kemono.postprocessors.filename={id}_links.txt'
-        '--option', 'extractor.kemono.postprocessors.mode=custom'
-        '--option'
-
-        @(
-            'extractor.kemono.postprocessors.format'
-            '"Text: {content}\nDesc: {description}\nEmbed: {embed[url]}\n"'
-        ) -join '='
-    )
-
-    gallery-dl --quiet $ConfigurationArguments --no-download `
-        --destination (__DefaultDownloadLocation) $Url
+    gallery-dl (__KemonoExtrnalUrlConfiguration) --quiet $ConfigurationArguments `
+        --no-download --destination (__DefaultDownloadLocation) $Url
 
     if ($LASTEXITCODE -eq 0) {
         $MetadataTxts = Get-ChildItem (Join-Path (__DefaultDownloadLocation) *.txt)
