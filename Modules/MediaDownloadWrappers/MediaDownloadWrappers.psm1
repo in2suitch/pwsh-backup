@@ -165,10 +165,7 @@ function Save-Media {
             '--postprocessor-args', 'Metadata+ffmpeg:-f mp4'
             '-x', '--audio-format', 'm4a'
         }
-        else {
-            'mp4'
-            '--merge-output-format', 'mp4'
-        }
+        else { 'mp4', '--merge-output-format', 'mp4' }
     )
 
     $CompleteYoutubeArguments = @(
