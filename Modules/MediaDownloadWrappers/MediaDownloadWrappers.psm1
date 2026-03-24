@@ -1,5 +1,5 @@
 function __DefaultDownloadLocation {
-    (Test-Path 'R:\') ? 'R:\' : 'E:\Downloads'
+    $IsMacOS ? $HOME : (Test-Path 'R:\') ? 'R:\' : 'E:\Downloads'
 }
 
 function __BrowserCookiesArgumentList {
