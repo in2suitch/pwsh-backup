@@ -246,6 +246,7 @@ function Get-MediaInfo {
         [string]$Path,
         [string]$Field,
 
+        [Alias('C')]
         [switch]$DefaultYoutubePlayerClient
     )
 
