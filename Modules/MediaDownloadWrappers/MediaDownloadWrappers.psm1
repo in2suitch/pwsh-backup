@@ -31,13 +31,11 @@ function Invoke-YtDlp {
         '--concurrent-fragments', '14'
         '--format', 'bestvideo*[format_note!*=?AI-upscaled]+bestaudio/best'
         '--output', '%(title)s_@%(id)s.%(ext)s'
+        '--paths', (__DefaultDownloadLocation)
         '--sleep-subtitles', '1'
         '--sleep-requests', '0.75'
         '--min-sleep-interval', '1'
         '--max-sleep-interval', '3'
-
-        if ($IsWindows) { '--paths', (__DefaultDownloadLocation) }
-
         $args
     )
 
@@ -49,13 +47,10 @@ function Invoke-GalleryDl {
 
     $Arguments = @(
         '--chunk-size', '7.5M'
+        '--destination', (__DefaultDownloadLocation)
         '--option', 'extractor.directory=[]'
         '--sleep', '1-3'
         '--sleep-request', '0.75'
-
-        if ($IsWindows) {
-            '--destination', (__DefaultDownloadLocation)
-        }
 
         if ($Authenticated) { __BrowserCookiesArgumentList }
 
