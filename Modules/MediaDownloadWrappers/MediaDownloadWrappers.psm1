@@ -39,7 +39,7 @@ function __KemonoExtrnalUrlConfiguration {
 }
 
 function Invoke-YtDlp {
-    [Alias('iyd')]param()
+    [Alias('iyd')]param([switch]$Authenticated)
 
     $Arguments = @(
         '--buffer-size', '7.5M', '--no-resize-buffer'
@@ -51,6 +51,9 @@ function Invoke-YtDlp {
         '--sleep-requests', '0.75'
         '--min-sleep-interval', '1'
         '--max-sleep-interval', '3'
+
+        if ($Authenticated) { __BrowserCookiesArgumentList }
+
         $args
     )
 
@@ -134,7 +137,6 @@ function Save-Media {
         if ($Path) { '--paths', $Path }
         if ($AudioOnly) { '-f', 'ba' }
         if (-not $IsOutputVerbose) { '--quiet', '--progress' }
-        if ($Authenticated) { __BrowserCookiesArgumentList }
         if (-not $IsDefaultPlayerClientRequired) {
             __OptimalYoutubePlayerClientArgumentList
         }
@@ -176,10 +178,11 @@ function Save-Media {
     )
 
     if ($MediaHostName -match 'youtu') {
-        Invoke-YtDlp @CompleteYoutubeArguments
+        Invoke-YtDlp -Authenticated:$Authenticated @CompleteYoutubeArguments
     }
     elseif (($MediaHostName -in $ComplexHostNames) -or $WithYtDlp) {
-        Invoke-YtDlp @ComplexHostArguments @SourceNeutralArguments
+        Invoke-YtDlp @ComplexHostArguments -Authenticated:$Authenticated `
+            @SourceNeutralArguments
     }
     else {
         Invoke-GalleryDl @OtherHostArguments -Authenticated:$Authenticated `
@@ -242,14 +245,16 @@ function Get-MediaInfo {
         [string]$Field,
 
         [Alias('C')]
-        [switch]$DefaultYoutubePlayerClient
+        [switch]$DefaultYoutubePlayerClient,
+
+        [switch]$Authenticated
     )
 
     $SourceSpecificArguments = @(
         if ($Field) { '--print', $Field }
         else { '--list-formats', '--quiet' }
 
-        if (-not $DefaultYoutubePlayerClient) {
+        if (-not $DefaultYoutubePlayerClient -and -not $Authenticated) {
             __OptimalYoutubePlayerClientArgumentList
         }
 
@@ -258,7 +263,7 @@ function Get-MediaInfo {
 
     if ($Path -notmatch '^https?:') { mediainfo (Convert-Path $Path) }
     elseif ($Path -match 'youtu|^[0-9A-Za-z_-]{11}$|twitch|vimeo') {
-        Invoke-YtDlp @SourceSpecificArguments
+        Invoke-YtDlp -Authenticated:$Authenticated @SourceSpecificArguments
     }
-    else { Invoke-GalleryDl -Authenticated --list-keywords $Path }
+    else { Invoke-GalleryDl -Authenticated:$Authenticated --list-keywords $Path }
 }
