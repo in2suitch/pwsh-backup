@@ -23,7 +23,7 @@ function Get-OptimalYoutubePlayerClientArgumentList ([switch]$ForHistory) {
 
 function Get-UtcDate { Get-Date -Format 'yyyy-MM-dd' -AsUTC }
 
-function Get-KemonoExtrnalUrlConfiguration {
+function Get-KemonoExternalUrlConfiguration {
     '--option', 'extractor.directory=[]'
     '--option', 'extractor.kemono.endpoint=posts+'
     '--option', 'extractor.kemono.postprocessors.name=metadata'
@@ -217,7 +217,7 @@ function Add-YoutubeHistory {
 function Save-KemonoExternalUrlList {
     [Alias('svkemono')]param([string]$Url)
 
-    gallery-dl (Get-KemonoExtrnalUrlConfiguration) --quiet $ConfigurationArguments `
+    gallery-dl (Get-KemonoExternalUrlConfiguration) --quiet $ConfigurationArguments `
         --no-download --destination (Get-DefaultDownloadLocation) $Url
 
     if ($LASTEXITCODE -eq 0) {
