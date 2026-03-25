@@ -82,11 +82,6 @@ function Save-Media {
     [Alias('svm')]
     param(
         [Parameter(Mandatory, Position = 0)]
-        [ValidateScript({
-            $UniqueHosts = $_.Host | Select-Object -Unique
-            $UniqueHosts.Count -eq 1
-        }, ErrorMessage = 'One host at a time.'
-        )]
         [uri[]]$Url,
 
         [Alias('N')]
