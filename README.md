@@ -15,6 +15,7 @@ Software required to be present in PATH:
 - ImageMagick
 - LosslessCut
 - MPC-HC
+- GPAC
 
 Optional:
 
