@@ -1,8 +1,8 @@
-function __DefaultDownloadLocation {
+function Get-DefaultDownloadLocation {
     $IsMacOS ? $HOME : (Test-Path 'R:\') ? 'R:\' : 'E:\Downloads'
 }
 
-function __BrowserCookiesArgumentList {
+function Get-BrowserCookiesArgumentList {
     $WindowsBrowserProfilePath = "$env:APPDATA\Floorp\Profiles\ul67hs29.default-release"
     $MacBrowserProfilePath = (
         "$HOME/Library/Application Support/Floorp/Profiles/o2pl6jz3.default-default"
@@ -14,16 +14,16 @@ function __BrowserCookiesArgumentList {
     '--cookies-from-browser', "firefox:$CurrentSystemPath"
 }
 
-function __OptimalYoutubePlayerClientArgumentList ([switch]$ForHistory) {
+function Get-OptimalYoutubePlayerClientArgumentList ([switch]$ForHistory) {
     $ClientConfiguration = $ForHistory ? 'default,-web_creator;use_ad_playback_context'
                                        : 'android_vr'
 
     '--extractor-args', "youtube:player_client=$ClientConfiguration"
 }
 
-function __UtcDate { Get-Date -Format 'yyyy-MM-dd' -AsUTC }
+function Get-UtcDate { Get-Date -Format 'yyyy-MM-dd' -AsUTC }
 
-function __KemonoExtrnalUrlConfiguration {
+function Get-KemonoExtrnalUrlConfiguration {
     '--option', 'extractor.directory=[]'
     '--option', 'extractor.kemono.endpoint=posts+'
     '--option', 'extractor.kemono.postprocessors.name=metadata'
@@ -46,13 +46,13 @@ function Invoke-YtDlp {
         '--concurrent-fragments', '16'
         '--format', 'bestvideo*[format_note!*=?AI-upscaled]+bestaudio/best'
         '--output', '%(title)s_@%(id)s.%(ext)s'
-        '--paths', (__DefaultDownloadLocation)
+        '--paths', (Get-DefaultDownloadLocation)
         '--sleep-subtitles', '1'
         '--sleep-requests', '0.75'
         '--min-sleep-interval', '1'
         '--max-sleep-interval', '3'
 
-        if ($Authenticated) { __BrowserCookiesArgumentList }
+        if ($Authenticated) { Get-BrowserCookiesArgumentList }
 
         $args
     )
@@ -65,12 +65,12 @@ function Invoke-GalleryDl {
 
     $Arguments = @(
         '--chunk-size', '7.5M'
-        '--destination', (__DefaultDownloadLocation)
+        '--destination', (Get-DefaultDownloadLocation)
         '--option', 'extractor.directory=[]'
         '--sleep', '1-3'
         '--sleep-request', '0.75'
 
-        if ($Authenticated) { __BrowserCookiesArgumentList }
+        if ($Authenticated) { Get-BrowserCookiesArgumentList }
 
         $args
     )
@@ -138,7 +138,7 @@ function Save-Media {
         if ($AudioOnly) { '-f', 'ba' }
         if (-not $IsOutputVerbose) { '--quiet', '--progress' }
         if (-not $IsDefaultPlayerClientRequired) {
-            __OptimalYoutubePlayerClientArgumentList
+            Get-OptimalYoutubePlayerClientArgumentList
         }
 
         if ($MediaHostName -match 'vimeo') {
@@ -151,7 +151,7 @@ function Save-Media {
         if ($Name) {
             '--filename'
             if ($NoDate -or $Name -match '\d{4}-\d{2}-\d{2}') { "$Name.{extension}" }
-            else { "${Name}_$(__UtcDate).{extension}" }
+            else { "${Name}_$(Get-UtcDate).{extension}" }
         }
 
         if ($Path) { '--destination', $Path }
@@ -205,8 +205,8 @@ function Add-YoutubeHistory {
     }
 
     $Arguments = @(
-        (__OptimalYoutubePlayerClientArgumentList -ForHistory)
-        __BrowserCookiesArgumentList
+        (Get-OptimalYoutubePlayerClientArgumentList -ForHistory)
+        Get-BrowserCookiesArgumentList
         '--quiet', '--mark-watched', '--simulate'
         $YoutubeUrlOrIds
     )
@@ -217,11 +217,11 @@ function Add-YoutubeHistory {
 function Save-KemonoExternalUrlList {
     [Alias('svkemono')]param([string]$Url)
 
-    gallery-dl (__KemonoExtrnalUrlConfiguration) --quiet $ConfigurationArguments `
-        --no-download --destination (__DefaultDownloadLocation) $Url
+    gallery-dl (Get-KemonoExtrnalUrlConfiguration) --quiet $ConfigurationArguments `
+        --no-download --destination (Get-DefaultDownloadLocation) $Url
 
     if ($LASTEXITCODE -eq 0) {
-        $MetadataTxts = Get-ChildItem (Join-Path (__DefaultDownloadLocation) *.txt)
+        $MetadataTxts = Get-ChildItem (Join-Path (Get-DefaultDownloadLocation) *.txt)
         $ExternalUrls = [System.Collections.Generic.HashSet[string]]::new()
         $UrlPattern = [regex]"https?://[^""'\s<>]+"
 
@@ -233,7 +233,7 @@ function Save-KemonoExternalUrlList {
             }
         }
 
-        $ExternalUrls | Set-Content (Join-Path (__DefaultDownloadLocation) links.txt)
+        $ExternalUrls | Set-Content (Join-Path (Get-DefaultDownloadLocation) links.txt)
         $MetadataTxts | Remove-Item -Force
     }
 }
@@ -255,7 +255,7 @@ function Get-MediaInfo {
         else { '--list-formats', '--quiet' }
 
         if (-not $DefaultYoutubePlayerClient -and -not $Authenticated) {
-            __OptimalYoutubePlayerClientArgumentList
+            Get-OptimalYoutubePlayerClientArgumentList
         }
 
         $Path
