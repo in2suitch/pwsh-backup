@@ -130,17 +130,16 @@ function Save-Media {
         [switch]$WithYtDlp
     )
 
+    $MediaHostNames = Group-MediaUrlByHost $Url
     $IsOutputVerbose = $PSBoundParameters.ContainsKey('Verbose')
     $IsDefaultPlayerClientRequired = $DefaultYoutubePlayerClient -or $Authenticated
 
-    $MediaHostName = $Url[0].Host -replace '^www\.'
-    $ComplexHostNames = 'twitch.tv', 'player.vimeo.com'
     $SourceNeutralArguments = @(
         if ($Rate) { '--limit-rate', "${Rate}M" }
         $ArgumentList
-        $Url
     )
 
+    $ComplexHostNames = 'twitch.tv', 'player.vimeo.com'
     $ComplexHostArguments = @(
         if ($Name) {
             '--output'
@@ -193,16 +192,21 @@ function Save-Media {
         $SourceNeutralArguments
     )
 
-    if ($MediaHostName -match 'youtu') {
-        Invoke-YtDlp -Authenticated:$Authenticated @CompleteYoutubeArguments
-    }
-    elseif (($MediaHostName -in $ComplexHostNames) -or $WithYtDlp) {
-        Invoke-YtDlp @ComplexHostArguments -Authenticated:$Authenticated `
-            @SourceNeutralArguments
-    }
-    else {
-        Invoke-GalleryDl @OtherHostArguments -Authenticated:$Authenticated `
-            @SourceNeutralArguments
+    foreach ($MediaHostName in $MediaHostNames.Keys) {
+        $UrlArray = $MediaHostNames[$MediaHostName]
+
+        if ($MediaHostName -match 'youtu') {
+            Invoke-YtDlp -Authenticated:$Authenticated @CompleteYoutubeArguments `
+                @UrlArray
+        }
+        elseif (($MediaHostName -in $ComplexHostNames) -or $WithYtDlp) {
+            Invoke-YtDlp @ComplexHostArguments -Authenticated:$Authenticated `
+                @SourceNeutralArguments @UrlArray
+        }
+        else {
+            Invoke-GalleryDl @OtherHostArguments -Authenticated:$Authenticated `
+                @SourceNeutralArguments @UrlArray
+        }
     }
 }
 
