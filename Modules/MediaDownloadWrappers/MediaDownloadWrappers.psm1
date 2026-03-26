@@ -196,17 +196,25 @@ function Save-Media {
     foreach ($MediaHostName in $MediaHostNames.Keys) {
         $UrlArray = $MediaHostNames[$MediaHostName]
 
-        if ($MediaHostName -match 'youtu') {
-            Invoke-YtDlp -Authenticated:$Authenticated @CompleteYoutubeArguments `
-                @UrlArray
-        }
-        elseif (($MediaHostName -in $ComplexHostNames) -or $WithYtDlp) {
-            Invoke-YtDlp @ComplexHostArguments -Authenticated:$Authenticated `
-                @SourceNeutralArguments @UrlArray
-        }
-        else {
-            Invoke-GalleryDl @OtherHostArguments -Authenticated:$Authenticated `
-                @SourceNeutralArguments @UrlArray
+        switch ($true) {
+            ($MediaHostName -match 'youtu') {
+                Invoke-YtDlp -Authenticated:$Authenticated @CompleteYoutubeArguments `
+                    @UrlArray
+
+                break
+            }
+            (($MediaHostName -in $ComplexHostNames) -or $WithYtDlp) {
+                Invoke-YtDlp @ComplexHostArguments -Authenticated:$Authenticated `
+                    @SourceNeutralArguments @UrlArray
+
+                break
+            }
+            default {
+                Invoke-GalleryDl @OtherHostArguments -Authenticated:$Authenticated `
+                    @SourceNeutralArguments @UrlArray
+
+                break
+            }
         }
     }
 }
