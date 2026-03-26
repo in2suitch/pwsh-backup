@@ -37,6 +37,20 @@ function Get-KemonoExternalUrlConfiguration {
         '"Text: {content}\nDesc: {description}\nEmbed: {embed[url]}\n"'
     ) -join '='
 }
+function Group-MediaUrlByHost ([uri[]]$Url) {
+    $GroupedUrls = @{}
+    foreach ($Link in $Url) {
+        $NormalizedHostName = $Link.Host -replace '^www\.'
+        if (-not $GroupedUrls.ContainsKey($NormalizedHostName)) {
+            $GroupedUrls.Add(
+                $NormalizedHostName,
+                [System.Collections.Generic.List[uri]]::new()
+            )
+        }
+        $GroupedUrls[$NormalizedHostName].Add($Link)
+    }
+    $GroupedUrls
+}
 
 function Invoke-YtDlp {
     [Alias('iyd')]param([switch]$Authenticated)
