@@ -37,6 +37,7 @@ function Get-KemonoExternalUrlConfiguration {
         '"Text: {content}\nDesc: {description}\nEmbed: {embed[url]}\n"'
     ) -join '='
 }
+
 function Group-MediaUrlByHost ([uri[]]$Url) {
     $GroupedUrls = @{}
     foreach ($Link in $Url) {
