@@ -156,12 +156,9 @@ function Save-Media {
         if (-not $IsDefaultPlayerClientRequired) {
             Get-OptimalYoutubePlayerClientArgumentList
         }
-
-        if ($MediaHostName -match 'vimeo') {
-            '--add-headers', 'referer:https://patreon.com'
-            '--no-warnings'
-        }
     )
+
+    $VimeoArguments = '--add-headers', 'referer:https://patreon.com', '--no-warnings'
 
     $OtherHostArguments = @(
         if ($Name) {
@@ -200,6 +197,12 @@ function Save-Media {
             ($MediaHostName -match 'youtu') {
                 Invoke-YtDlp -Authenticated:$Authenticated @CompleteYoutubeArguments `
                     @UrlArray
+
+                break
+            }
+            ($MediaHostName -match 'vimeo') {
+                Invoke-YtDlp @ComplexHostArguments -Authenticated:$Authenticated `
+                    @VimeoArguments @SourceNeutralArguments @UrlArray
 
                 break
             }
