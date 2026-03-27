@@ -113,7 +113,7 @@ function Save-Media {
         [int]$Rate,
 
         [Parameter(ValueFromRemainingArguments)]
-        [string[]]$ArgumentList,
+        [string[]]$ArgumentList = @(),
 
         [Alias('A')]
         [switch]$AudioOnly,
