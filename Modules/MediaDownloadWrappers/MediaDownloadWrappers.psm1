@@ -76,9 +76,14 @@ function Invoke-YtDlp {
 }
 
 function Invoke-GalleryDl {
-    [Alias('igd')]param([switch]$Authenticated)
+    [Alias('igd')]param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$ArgumentList = @(),
 
-    $Arguments = @(
+        [switch]$Authenticated
+    )
+
+    $PredefinedArguments = @(
         '--chunk-size', '7.5M'
         '--destination', (Get-DefaultDownloadLocation)
         '--option', 'extractor.directory=[]'
@@ -87,10 +92,11 @@ function Invoke-GalleryDl {
 
         if ($Authenticated) { Get-BrowserCookiesArgumentList }
 
-        $args
+        $ArgumentList
     )
 
-    gallery-dl $Arguments
+    Write-Verbose ($PredefinedArguments -join ' ')
+    gallery-dl $PredefinedArguments
 }
 
 function Save-Media {
