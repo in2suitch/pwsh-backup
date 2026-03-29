@@ -141,13 +141,13 @@ function Save-Media {
     $IsOutputVerbose = $PSBoundParameters.ContainsKey('Verbose')
     $IsDefaultPlayerClientRequired = $DefaultYoutubePlayerClient -or $Authenticated
 
-    $SourceNeutralArguments = @(
+    $ToolNeutralArguments = @(
         if ($Rate) { '--limit-rate', "${Rate}M" }
         $ArgumentList
     )
 
-    $ComplexHostNames = 'twitch.tv', 'player.vimeo.com'
-    $ComplexHostArguments = @(
+    $YtDlpHostNames = 'twitch.tv', 'player.vimeo.com'
+    $YtDlpHostArguments = @(
         if ($Name) {
             '--output'
             "${Name}_%(release_date>%Y-%m-%d,upload_date>%Y-%m-%d)s_@%(id)s.%(ext)s"
@@ -166,7 +166,7 @@ function Save-Media {
 
     $VimeoArguments = '--add-headers', 'referer:https://patreon.com', '--no-warnings'
 
-    $OtherHostArguments = @(
+    $GalleryDlHostArguments = @(
         if ($Name) {
             '--filename'
             if ($NoDate -or $Name -match '\d{4}-\d{2}-\d{2}') { "$Name.{extension}" }
@@ -189,11 +189,11 @@ function Save-Media {
         else { 'mp4', '--merge-output-format', 'mp4' }
     )
 
-    $CompleteYoutubeArguments = @(
+    $YoutubeArguments = @(
         '--sponsorblock-mark', 'all'
-        $ComplexHostArguments
+        $YtDlpHostArguments
         if ($AsMp4) { $Mp4MuxingArguments }
-        $SourceNeutralArguments
+        $ToolNeutralArguments
     )
 
     foreach ($MediaHostName in $MediaHostNames.Keys) {
@@ -201,26 +201,26 @@ function Save-Media {
 
         switch ($true) {
             ($MediaHostName -match 'youtu') {
-                Invoke-YtDlp -Authenticated:$Authenticated @CompleteYoutubeArguments `
+                Invoke-YtDlp -Authenticated:$Authenticated @YoutubeArguments `
                     @UrlArray
 
                 break
             }
             ($MediaHostName -match 'vimeo') {
-                Invoke-YtDlp @ComplexHostArguments -Authenticated:$Authenticated `
-                    @VimeoArguments @SourceNeutralArguments @UrlArray
+                Invoke-YtDlp @YtDlpHostArguments -Authenticated:$Authenticated `
+                    @VimeoArguments @ToolNeutralArguments @UrlArray
 
                 break
             }
-            (($MediaHostName -in $ComplexHostNames) -or $WithYtDlp) {
-                Invoke-YtDlp @ComplexHostArguments -Authenticated:$Authenticated `
-                    @SourceNeutralArguments @UrlArray
+            (($MediaHostName -in $YtDlpHostNames) -or $WithYtDlp) {
+                Invoke-YtDlp @YtDlpHostArguments -Authenticated:$Authenticated `
+                    @ToolNeutralArguments @UrlArray
 
                 break
             }
             default {
-                Invoke-GalleryDl @OtherHostArguments -Authenticated:$Authenticated `
-                    @SourceNeutralArguments @UrlArray
+                Invoke-GalleryDl @GalleryDlHostArguments -Authenticated:$Authenticated `
+                    @ToolNeutralArguments @UrlArray
 
                 break
             }
