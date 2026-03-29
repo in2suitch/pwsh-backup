@@ -103,13 +103,6 @@ function Save-Media {
     [Alias('svm')]
     param(
         [Parameter(Mandatory, Position = 0)]
-        [ValidateScript(
-            { $_.Host -ne 'gofile.io' },
-            ErrorMessage = (
-                'It is currently not recommended ' +
-                'to download from gofile.io using CLI tools.'
-            )
-        )]
         [uri[]]$Url,
 
         [Alias('N')]
