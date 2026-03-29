@@ -57,7 +57,7 @@ function Invoke-YtDlp {
     [Alias('iyd')]param([switch]$Authenticated)
 
     $Arguments = @(
-        '--buffer-size', '7.5M', '--no-resize-buffer'
+        '--buffer-size', '6.5M', '--no-resize-buffer'
         '--concurrent-fragments', '16'
         '--format', 'bestvideo*[format_note!*=?AI-upscaled]+bestaudio/best'
         '--output', '%(title)s_@%(id)s.%(ext)s'
@@ -84,7 +84,7 @@ function Invoke-GalleryDl {
     )
 
     $PredefinedArguments = @(
-        '--chunk-size', '7.5M'
+        '--chunk-size', '6.5M'
         '--destination', (Get-DefaultDownloadLocation)
         '--option', 'extractor.directory=[]'
         '--sleep', '1-3'
