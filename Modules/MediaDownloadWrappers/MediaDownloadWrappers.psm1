@@ -58,7 +58,7 @@ function Invoke-YtDlp {
 
     $Arguments = @(
         '--buffer-size', '6.5M', '--no-resize-buffer'
-        '--concurrent-fragments', '16'
+        '--concurrent-fragments', '20'
         '--format', 'bestvideo*[format_note!*=?AI-upscaled]+bestaudio/best'
         '--output', '%(title)s_@%(id)s.%(ext)s'
         '--paths', (Get-DefaultDownloadLocation)
