@@ -136,14 +136,11 @@ function Save-Media {
     )
 
     $YtDlpHostPatterns = @('pornhub', 'twitch') -join '|'
+    $YtDlpPreferredDateFormat = '%(release_date>%Y-%m-%d,upload_date>%Y-%m-%d)s'
     $YtDlpHostArguments = @(
-        if ($Name) {
-            '--output'
-            "${Name}_%(release_date>%Y-%m-%d,upload_date>%Y-%m-%d)s_@%(id)s.%(ext)s"
-        }
-        else {
-            '--restrict-filenames'
-        }
+        $Name ? '--output', "${Name}_${YtDlpPreferredDateFormat}_@%(id)s.%(ext)s"
+              : $NoDate ? '--output', "${Name}_@%(id)s.%(ext)s"
+              : '--restrict-filenames'
 
         if ($Path) { '--paths', $Path }
         if ($AudioOnly) { '--format', 'ba' }
