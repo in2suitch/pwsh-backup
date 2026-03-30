@@ -47,7 +47,7 @@ function Group-MediaUrlByHost ([uri[]]$UrlCollection) {
                 [System.Collections.Generic.List[uri]]::new()
             )
         }
-        $GroupedUrls[$NormalizedHostName].Add($Url)
+        $GroupedUrls[$Url.Host].Add($Url)
     }
     $GroupedUrls
 }
