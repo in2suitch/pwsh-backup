@@ -155,7 +155,7 @@ function Save-Media {
     )
 
     $VimeoArguments = '--add-headers', 'referer:https://patreon.com', '--no-warnings'
-    $YoutubeArguments = @( '--sponsorblock-mark', 'all' )
+    $YoutubeArguments = '--sponsorblock-mark', 'all'
 
     $GalleryDlHostArguments = @(
         if ($Name) {
