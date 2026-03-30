@@ -38,17 +38,16 @@ function Get-KemonoExternalUrlConfiguration {
     ) -join '='
 }
 
-function Group-MediaUrlByHost ([uri[]]$Url) {
+function Group-MediaUrlByHost ([uri[]]$UrlCollection) {
     $GroupedUrls = @{}
-    foreach ($Link in $Url) {
-        $NormalizedHostName = $Link.Host -replace '^www\.'
-        if (-not $GroupedUrls.ContainsKey($NormalizedHostName)) {
+    foreach ($Url in $UrlCollection) {
+        if (-not $GroupedUrls.ContainsKey($Url.Host)) {
             $GroupedUrls.Add(
-                $NormalizedHostName,
+                $Url.Host,
                 [System.Collections.Generic.List[uri]]::new()
             )
         }
-        $GroupedUrls[$NormalizedHostName].Add($Link)
+        $GroupedUrls[$NormalizedHostName].Add($Url)
     }
     $GroupedUrls
 }
