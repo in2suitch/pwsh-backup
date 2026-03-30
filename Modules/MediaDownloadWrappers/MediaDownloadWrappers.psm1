@@ -146,7 +146,7 @@ function Save-Media {
         }
 
         if ($Path) { '--paths', $Path }
-        if ($AudioOnly) { '-f', 'ba' }
+        if ($AudioOnly) { '--format', 'ba' }
         if (-not $IsOutputVerbose) { '--quiet', '--progress' }
         if (-not $IsDefaultPlayerClientRequired) {
             Get-OptimalYoutubePlayerClientArgumentList
