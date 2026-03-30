@@ -117,9 +117,6 @@ function Save-Media {
         [Alias('A')]
         [switch]$AudioOnly,
 
-        [Alias('Mp4')]
-        [switch]$AsMp4,
-
         [Alias('ND')]
         [switch]$NoDate,
 
@@ -158,6 +155,7 @@ function Save-Media {
     )
 
     $VimeoArguments = '--add-headers', 'referer:https://patreon.com', '--no-warnings'
+    $YoutubeArguments = @( '--sponsorblock-mark', 'all' )
 
     $GalleryDlHostArguments = @(
         if ($Name) {
@@ -170,32 +168,13 @@ function Save-Media {
         if ($IsOutputVerbose) { '--verbose' }
     )
 
-    $Mp4MuxingArguments = @(
-        '--remux-video'
-
-        if ($AudioOnly) {
-            'm4a'
-            '--postprocessor-args', 'ExtractAudio+ffmpeg:-codec copy -f mp4'
-            '--postprocessor-args', 'Metadata+ffmpeg:-f mp4'
-            '-x', '--audio-format', 'm4a'
-        }
-        else { 'mp4', '--merge-output-format', 'mp4' }
-    )
-
-    $YoutubeArguments = @(
-        '--sponsorblock-mark', 'all'
-        $YtDlpHostArguments
-        if ($AsMp4) { $Mp4MuxingArguments }
-        $ToolNeutralArguments
-    )
-
     foreach ($MediaHostName in $MediaHostNames.Keys) {
         $UrlArray = $MediaHostNames[$MediaHostName]
 
         switch ($true) {
             ($MediaHostName -match 'youtu') {
-                Invoke-YtDlp -Authenticated:$Authenticated @YoutubeArguments `
-                    @UrlArray
+                Invoke-YtDlp @YtDlpHostArguments -Authenticated:$Authenticated `
+                    @YoutubeArguments @ToolNeutralArguments @UrlArray
 
                 break
             }
