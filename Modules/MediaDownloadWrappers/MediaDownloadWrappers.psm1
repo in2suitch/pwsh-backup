@@ -136,7 +136,7 @@ function Save-Media {
         $ArgumentList
     )
 
-    $YtDlpHostNames = 'twitch.tv', 'player.vimeo.com'
+    $YtDlpHostPatterns = @('pornhub', 'twitch') -join '|'
     $YtDlpHostArguments = @(
         if ($Name) {
             '--output'
@@ -184,7 +184,7 @@ function Save-Media {
 
                 break
             }
-            (($MediaHostName -in $YtDlpHostNames) -or $WithYtDlp) {
+            (($MediaHostName -match "\b($YtDlpHostPatterns)\b") -or $WithYtDlp) {
                 Invoke-YtDlp @YtDlpHostArguments -Authenticated:$Authenticated `
                     @ToolNeutralArguments @UrlArray
 
