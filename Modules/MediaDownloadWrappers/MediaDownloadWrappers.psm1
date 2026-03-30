@@ -38,7 +38,7 @@ function Get-KemonoExternalUrlConfiguration {
     ) -join '='
 }
 
-function Group-MediaUrlByHost ([uri[]]$UrlCollection) {
+function Group-MediaUrl ([uri[]]$UrlCollection) {
     $GroupedUrls = @{}
     foreach ($Url in $UrlCollection) {
         if (-not $GroupedUrls.ContainsKey($Url.Host)) {
@@ -126,7 +126,7 @@ function Save-Media {
         [switch]$WithYtDlp
     )
 
-    $MediaHostNames = Group-MediaUrlByHost $Url
+    $MediaHostNames = Group-MediaUrl $Url
     $IsOutputVerbose = $PSBoundParameters.ContainsKey('Verbose')
     $IsDefaultPlayerClientRequired = $DefaultYoutubePlayerClient -or $Authenticated
 
