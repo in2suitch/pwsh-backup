@@ -1,6 +1,6 @@
 ## Personal PowerShell scripts for media manipulation
 
-Contains hard-coded paths/opinionated options, requires manual review before use
+Contains hard-coded paths and opinionated/NSFW options, requires manual review before use
 
 Software required to be present in PATH:
 
