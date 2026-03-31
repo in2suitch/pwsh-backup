@@ -54,7 +54,7 @@ function Group-MediaUrl ([uri[]]$UrlCollection) {
 
 function Get-YtDlpHostPattern {
     @(
-        'gumonmyshoe', 'pornhub', 'twitch', 'youtu'
+        'gumonmyshoe', 'pornhub', 'twitch', 'youtu(be)?'
     ) -join '|'
 }
 
