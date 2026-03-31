@@ -54,7 +54,7 @@ function Group-MediaUrl ([uri[]]$UrlCollection) {
 
 function Get-YtDlpHostPattern {
     @(
-        'pornhub', 'twitch', 'gumonmyshoe'
+        'gumonmyshoe', 'pornhub', 'twitch', 'youtu'
     ) -join '|'
 }
 
@@ -125,6 +125,9 @@ function Save-Media {
         [Alias('ND')]
         [switch]$NoDate,
 
+        [Alias('SM')]
+        [switch]$SponsorMetadata,
+
         [Alias('C')]
         [switch]$DefaultYoutubePlayerClient,
 
@@ -151,6 +154,7 @@ function Save-Media {
 
         if ($Path) { '--paths', $Path }
         if ($AudioOnly) { '--format', 'ba' }
+        if ($SponsorMetadata) { '--sponsorblock-mark', 'all' }
         if (-not $IsOutputVerbose) { '--quiet', '--progress' }
         if (-not $IsDefaultPlayerClientRequired) {
             Get-OptimalYoutubePlayerClientArgumentList
@@ -158,7 +162,6 @@ function Save-Media {
     )
 
     $VimeoArguments = '--add-headers', 'referer:https://patreon.com', '--no-warnings'
-    $YoutubeArguments = '--sponsorblock-mark', 'all'
 
     $GalleryDlHostArguments = @(
         if ($Name) {
@@ -174,31 +177,17 @@ function Save-Media {
     foreach ($MediaHostName in $MediaHostNames.Keys) {
         $UrlArray = $MediaHostNames[$MediaHostName]
 
-        switch ($true) {
-            ($MediaHostName -match 'youtu') {
-                Invoke-YtDlp @YtDlpHostArguments -Authenticated:$Authenticated `
-                    @YoutubeArguments @ToolNeutralArguments @UrlArray
-
-                break
-            }
-            ($MediaHostName -match 'vimeo') {
-                Invoke-YtDlp @YtDlpHostArguments -Authenticated:$Authenticated `
-                    @VimeoArguments @ToolNeutralArguments @UrlArray
-
-                break
-            }
-            (($MediaHostName -match "\b($(Get-YtDlpHostPattern))\b") -or $WithYtDlp) {
-                Invoke-YtDlp @YtDlpHostArguments -Authenticated:$Authenticated `
-                    @ToolNeutralArguments @UrlArray
-
-                break
-            }
-            default {
-                Invoke-GalleryDl @GalleryDlHostArguments -Authenticated:$Authenticated `
-                    @ToolNeutralArguments @UrlArray
-
-                break
-            }
+        if ($MediaHostName -match 'vimeo') {
+            Invoke-YtDlp @YtDlpHostArguments -Authenticated:$Authenticated `
+                @VimeoArguments @ToolNeutralArguments @UrlArray
+        }
+        elseif (($MediaHostName -match "\b($(Get-YtDlpHostPattern))\b") -or $WithYtDlp) {
+            Invoke-YtDlp @YtDlpHostArguments -Authenticated:$Authenticated `
+                @ToolNeutralArguments @UrlArray
+        }
+        else {
+            Invoke-GalleryDl @GalleryDlHostArguments -Authenticated:$Authenticated `
+                @ToolNeutralArguments @UrlArray
         }
     }
 }
