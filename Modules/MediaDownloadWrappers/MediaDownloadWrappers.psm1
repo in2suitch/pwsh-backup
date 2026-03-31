@@ -52,6 +52,12 @@ function Group-MediaUrl ([uri[]]$UrlCollection) {
     $GroupedUrls
 }
 
+function Get-YtDlpHostPattern {
+    @(
+        'pornhub', 'twitch'
+    ) -join '|'
+}
+
 function Invoke-YtDlp {
     [Alias('iyd')]param([switch]$Authenticated)
 
@@ -135,7 +141,6 @@ function Save-Media {
         $ArgumentList
     )
 
-    $YtDlpHostPatterns = @('pornhub', 'twitch') -join '|'
     $YtDlpPreferredDateFormat = '%(release_date>%Y-%m-%d,upload_date>%Y-%m-%d)s'
     $YtDlpHostArguments = @(
         if ($Name -and $NoDate) { '--output', "${Name}_@%(id)s.%(ext)s" }
@@ -182,7 +187,7 @@ function Save-Media {
 
                 break
             }
-            (($MediaHostName -match "\b($YtDlpHostPatterns)\b") -or $WithYtDlp) {
+            (($MediaHostName -match "\b($(Get-YtDlpHostPattern))\b") -or $WithYtDlp) {
                 Invoke-YtDlp @YtDlpHostArguments -Authenticated:$Authenticated `
                     @ToolNeutralArguments @UrlArray
 
